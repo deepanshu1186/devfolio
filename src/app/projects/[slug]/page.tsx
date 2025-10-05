@@ -7,8 +7,7 @@ import { projects, type Project } from "@/data/projects";
 
 type Params = { params: { slug: string } };
 
-export async function generateStaticParams(): Promise<Params["params"][]> {
-  // Pre-generate pages at build time for each project
+export async function generateStaticParams(): Promise<{ slug: string }[]> {
   return projects.map((p) => ({ slug: p.slug }));
 }
 
