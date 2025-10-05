@@ -1,4 +1,5 @@
 // src/app/page.tsx
+import { JSX } from "react";
 import Hero from "@/components/Hero";
 import ProjectCard from "@/components/ProjectCard";
 
