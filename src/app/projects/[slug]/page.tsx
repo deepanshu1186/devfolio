@@ -2,16 +2,19 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import type { JSX } from "react";
 import { projects, type Project } from "@/data/projects";
 
-type Params = { params: { slug: string } };
-
+// ✅ 1. Use simple explicit return type here
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
   return projects.map((p) => ({ slug: p.slug }));
 }
 
-export async function generateMetadata({ params }: Params): Promise<Metadata> {
+// ✅ 2. Explicit params typing, no custom type alias
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}): Promise<Metadata> {
   const project = projects.find((p) => p.slug === params.slug);
   if (!project) {
     return { title: "Project not found" };
@@ -24,14 +27,18 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
       description: project.short,
       images: project.heroImage ? [project.heroImage] : undefined,
     },
-  } as Metadata;
+  };
 }
 
-export default function ProjectDetail({ params }: { params: { slug: string } }): JSX.Element {
+// ✅ 3. Same inline type here, avoid `Params` alias
+export default function ProjectDetail({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const project = projects.find((p) => p.slug === params.slug) as Project | undefined;
 
   if (!project) {
-    // Tell Next to render the 404 page
     notFound();
   }
 
@@ -42,7 +49,6 @@ export default function ProjectDetail({ params }: { params: { slug: string } }):
 
       {project!.heroImage && (
         <div className="mb-6">
-          {/* next/image for optimization; uses public/ paths */}
           <Image
             src={project!.heroImage}
             alt={`${project!.title} screenshot`}
